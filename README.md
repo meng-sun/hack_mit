@@ -1,3 +1,3 @@
-# Hack_MIT_2016
+# HackMIT 2016
 
 Hack MIT 2016
