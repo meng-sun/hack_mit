@@ -36,7 +36,7 @@ def ListMessagesMatchingQuery(service, user_id, query):
 
 #returns ids for all unread messages in email
 #returns in format: [{u'id': u'15739b9330f732a7', u'threadId': u'15739b9330f732a7'}]
-def ListUnreadMessages(service, user_id, label_ids):
+def listUnreadMessages(service, user_id, label_ids):
   try:
     response = service.users().messages().list(userId=user_id,
                                                labelIds=label_ids).execute()
@@ -99,11 +99,26 @@ def addReadTag(service, user_id, msg_id, msg_labels={'removeLabelIds': ['UNREAD'
       print 'Message ID: %s - With Label IDs %s' % (msg_id, label_ids)
     except errors.HttpError, error:
       print 'An error occurred: %s' % error
+
+#do everything
+def allNewMail(service, user_id):
+  l = listUnreadMessages(service, user_id, 'UNREAD')
+  ids = []
+  data = []
+  for x in l:
+    ids.append(l['id'])
+  for id in ids:
+    data.append(getMessage(service, user_id, id))
+    addReadTag(service, user_id, msg_id)
+  return data
     
 #testing
 print (ListMessagesMatchingQuery(service, 'hackmitcalendar@gmail.com', ''))
 print(getMessage(service, 'hackmitcalendar@gmail.com', '15739b9330f732a7'))
 addReadTag(service, 'hackmitcalendar@gmail.com', '15739b9330f732a7')
+#print(listUnreadMessages(service, 'hackmitcalendar@gmail.com', 'INBOX'))
+
+
 
 
 
