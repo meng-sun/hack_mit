@@ -9,12 +9,6 @@ from oauth2client import client
 from oauth2client import tools
 from apiclient import errors
 
-#accesses gmail and authenticates
-credentials = quickstart.get_credentials()
-http = credentials.authorize(httplib2.Http())
-service = discovery.build('gmail', 'v1', http=http)
-results = service.users().labels().list(userId='me').execute()
-
 #sends out the ids for all the messages in the email
 def ListMessagesMatchingQuery(service, user_id, query):
   try:
@@ -101,21 +95,22 @@ def addReadTag(service, user_id, msg_id, msg_labels={'removeLabelIds': ['UNREAD'
       print 'An error occurred: %s' % error
 
 #do everything
-def allNewMail(service, user_id):
+def allNewMail(service):
+  user_id = "hackmitcalendar@gmail.com"
   l = listUnreadMessages(service, user_id, 'UNREAD')
   ids = []
   data = []
   for x in l:
-    ids.append(l['id'])
+    ids.append(x['id'])
   for id in ids:
     data.append(getMessage(service, user_id, id))
-    addReadTag(service, user_id, msg_id)
+    addReadTag(service, user_id, id)
   return data
     
 #testing
-print (ListMessagesMatchingQuery(service, 'hackmitcalendar@gmail.com', ''))
-print(getMessage(service, 'hackmitcalendar@gmail.com', '15739b9330f732a7'))
-addReadTag(service, 'hackmitcalendar@gmail.com', '15739b9330f732a7')
+#print (ListMessagesMatchingQuery(service, 'hackmitcalendar@gmail.com', ''))
+#print(getMessage(service, 'hackmitcalendar@gmail.com', '15739b9330f732a7'))
+#addReadTag(service, 'hackmitcalendar@gmail.com', '15739b9330f732a7')
 #print(listUnreadMessages(service, 'hackmitcalendar@gmail.com', 'INBOX'))
 
 
